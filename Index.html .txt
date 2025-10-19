@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>MB Villa Antigua Restaurant</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { margin:0; font-family:Arial,sans-serif; background-color:#fff8f0; color:#333; }
+  header { background-color:#B22222; color:white; text-align:center; padding:20px; }
+  header h1 { margin:0; font-size:2.4em; }
+  header p { margin:5px 0 15px 0; font-size:1.2em; }
+  header a { background-color:#25D366; color:white; padding:10px 20px; text-decoration:none; border-radius:6px; font-weight:bold; }
+  header a:hover { background-color:#128C7E; }
+  section { padding:20px; }
+  #menu { display:flex; overflow-x:auto; gap:20px; padding-bottom:20px; }
+  .card { min-width:220px; border:1px solid #ccc; border-radius:8px; padding:10px; background:#fff; flex-shrink:0; text-align:center; }
+  .card img { width:100%; height:150px; object-fit:cover; border-radius:6px; }
+  .card h3 { margin:10px 0 5px; }
+  .card p { margin:5px 0; }
+  .card input[type="number"] { width:60px; margin-top:5px; }
+  footer { background-color:#B22222; color:white; text-align:center; padding:10px; font-size:0.9em; }
+  button { background-color:#006400; color:white; border:none; padding:12px 20px; font-size:16px; cursor:pointer; border-radius:6px; }
+  button:hover { background-color:#228B22; }
+  #pedidoImagen { margin-top:20px; text-align:center; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+
+<header>
+  <h1>MB Villa Antigua Restaurant</h1>
+  <p>Descubre el auténtico sabor de México 🇲🇽</p>
+  <a href="https://wa.me/526941196890" target="_blank">Haz tu pedido por WhatsApp</a>
+</header>
+
+<section id="menu">
+  <!-- Aquí los 30 productos -->
+</section>
+
+<section id="pedidoSection" style="padding:20px;">
+  <button onclick="generarPedido()">Generar Pedido y WhatsApp</button>
+  <div id="pedidoImagen"></div>
+</section>
+
+<section id="contacto">
+  <h2>Contacto</h2>
+  <p>Dirección: [Agrega tu ubicación]</p>
+  <p>Horario: [Agrega tus horarios]</p>
+  <p>Teléfono/WhatsApp: <a href="https://wa.me/526941196890" target="_blank">6941196890</a></p>
+  <p>Redes sociales: [Agrega tus enlaces]</p>
+</section>
+
+<footer>
+  © 2025 MB Villa Antigua Restaurant – Todos los derechos reservados
+</footer>
+
+<script>
+  const productos = [
+    {nombre:"Tacos al Pastor", precio:60, img:"img1.jpg"},
+    {nombre:"Burrito de Pollo", precio:80, img:"img2.jpg"},
+    {nombre:"Enchiladas Verdes", precio:90, img:"img3.jpg"},
+    {nombre:"Guacamole", precio:50, img:"img4.jpg"},
+    {nombre:"Agua de Jamaica", precio:30, img:"img5.jpg"},
+    // … Agrega hasta 30 items (usa img6.jpg, img7.jpg, etc.)
+  ];
+
+  const menuDiv = document.getElementById("menu");
+  productos.forEach((p,index) => {
+    const card = document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+      <img src="${p.img}" alt="${p.nombre}">
+      <h3>${p.nombre}</h3>
+      <p>Precio: $${p.precio}</p>
+      <label>Cantidad: <input type="number" min="0" value="0" id="prod-${index}"></label>
+    `;
+    menuDiv.appendChild(card);
+  });
+
+  function generarPedido(){
+    let texto="Pedido MB Villa Antigua:\n";
+    let total=0;
+    const cont = document.createElement("div");
+    cont.style.backgroundColor="#fff8f0";
+    cont.style.padding="10px";
+    cont.style.border="2px solid #B22222";
+    cont.style.width="300px";
+    productos.forEach((p,index)=>{
+      const cant = parseInt(document.getElementById(`prod-${index}`).value);
+      if(cant>0){
+        texto+=`${p.nombre} x${cant} - $${p.precio*cant}\n`;
+        const item=document.createElement("p");
+        item.textContent=`${p.nombre} x${cant} - $${p.precio*cant}`;
+        cont.appendChild(item);
+        total+=p.precio*cant;
+      }
+    });
+    texto+=`Total: $${total}`;
+    const pTot=document.createElement("p");
+    pTot.textContent=`Total: $${total}`;
+    pTot.style.fontWeight="bold";
+    cont.appendChild(pTot);
+
+    html2canvas(cont).then(canvas=>{
+      const imgDiv=document.getElementById("pedidoImagen");
+      imgDiv.innerHTML="";
+      imgDiv.appendChild(canvas);
+      const waLink=document.createElement("a");
+      waLink.href="https://wa.me/526941196890?text="+encodeURIComponent(texto);
+      waLink.target="_blank";
+      waLink.textContent="Enviar Pedido por WhatsApp";
+      waLink.style.display="block";
+      waLink.style.marginTop="10px";
+      waLink.style.color="white";
+      waLink.style.backgroundColor="#25D366";
+      waLink.style.padding="10px";
+      waLink.style.textAlign="center";
+      waLink.style.borderRadius="6px";
+      imgDiv.appendChild(waLink);
+    });
+  }
+</script>
+
+</body>
+</html>
